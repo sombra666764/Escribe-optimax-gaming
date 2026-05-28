@@ -1,45 +1,37 @@
-name: Android CI
+build
+failed 4 minutes ago in 16s
+Search logs
+1s
+1s
+0s
+11s
+Run # 1. Buscar la carpeta del proyecto
+Proyecto en: .
 
-on:
-  push:
-    branches: [ "main" ]
-  workflow_dispatch:
+Welcome to Gradle 9.5.1!
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+Here are the highlights of this release:
+ - Task provenance in reports and failure messages
+ - Type-safe accessors for precompiled Kotlin Settings plugins
 
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+For more details see https://docs.gradle.org/9.5.1/release-notes.html
 
-    - name: Repair and Build APK
-      run: |
-        # 1. Buscar la carpeta del proyecto
-        GRADLE_PATH=$(find . -name "build.gradle" -not -path "*/app/*" | head -n 1)
-        PROJECT_DIR=$(dirname "$GRADLE_PATH")
-        cd "$PROJECT_DIR"
-        echo "Proyecto en: $PROJECT_DIR"
+Starting a Gradle Daemon (subsequent builds will be faster)
 
-        # 2. CREAR EL ARCHIVO QUE FALTA (settings.gradle)
-        # Esto le dice a GitHub que use los servidores de Google
-        echo "pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }" > settings.gradle
-        echo "dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral() } }" >> settings.gradle
-        echo "rootProject.name = 'OptiMaxGamingEdition'" >> settings.gradle
-        echo "include ':app'" >> settings.gradle
+[Incubating] Problems report is available at: file:///home/runner/work/Escribe-optimax-gaming/Escribe-optimax-gaming/build/reports/problems/problems-report.html
 
-        # 3. Preparar y compilar
-        gradle wrapper
-        chmod +x gradlew
-        ./gradlew assembleDebug
+FAILURE: Build failed with an exception.
 
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: optimax-app
-        path: "**/app/build/outputs/apk/debug/app-debug.apk"
+* What went wrong:
+Configuring project ':app' without an existing directory is not allowed. The configured projectDirectory '/home/runner/work/Escribe-optimax-gaming/Escribe-optimax-gaming/app' does not exist, can't be written to or is not a directory.
+
+* Try:
+> Make sure the project directory exists and is writable.
+> For more information, see https://docs.gradle.org/9.5.1/userguide/multi_project_builds.html#include_existing_projects_only
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+
+BUILD FAILED in 10s
+Error: Process completed with exit code 1.
+0s
+0s
+1s
