@@ -18,14 +18,22 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Build APK
+    - name: Repair and Build APK
       run: |
-        # Buscamos el archivo de configuración
+        # 1. Buscar la carpeta del proyecto
         GRADLE_PATH=$(find . -name "build.gradle" -not -path "*/app/*" | head -n 1)
         PROJECT_DIR=$(dirname "$GRADLE_PATH")
         cd "$PROJECT_DIR"
-        
-        # Preparamos y compilamos
+        echo "Proyecto en: $PROJECT_DIR"
+
+        # 2. CREAR EL ARCHIVO QUE FALTA (settings.gradle)
+        # Esto le dice a GitHub que use los servidores de Google
+        echo "pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }" > settings.gradle
+        echo "dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral() } }" >> settings.gradle
+        echo "rootProject.name = 'OptiMaxGamingEdition'" >> settings.gradle
+        echo "include ':app'" >> settings.gradle
+
+        # 3. Preparar y compilar
         gradle wrapper
         chmod +x gradlew
         ./gradlew assembleDebug
