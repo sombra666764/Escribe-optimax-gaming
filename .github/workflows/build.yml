@@ -17,13 +17,16 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: gradle
 
-    - name: Build with Gradle
+    - name: Build APK
       run: |
-        if [ ! -f gradlew ]; then
-          gradle wrapper
-        fi
+        # Buscamos el archivo de configuración
+        GRADLE_PATH=$(find . -name "build.gradle" -not -path "*/app/*" | head -n 1)
+        PROJECT_DIR=$(dirname "$GRADLE_PATH")
+        cd "$PROJECT_DIR"
+        
+        # Preparamos y compilamos
+        gradle wrapper
         chmod +x gradlew
         ./gradlew assembleDebug
 
@@ -31,4 +34,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: optimax-app
-        path: app/build/outputs/apk/debug/app-debug.apk
+        path: "**/app/build/outputs/apk/debug/app-debug.apk"
